@@ -1,0 +1,75 @@
+---
+title: 'cats on move: analysis'
+author: "Jin Kang"
+date: "2023-02-04"
+output: html_document
+---
+
+```{r preparation}
+#libraries
+library("tidyverse", "showtext")
+
+n#add and load fonts
+font_add_google("Indie Flower", "indieflower")
+f1 = "Indie Flower"
+
+showtext_auto()
+
+#load data
+readr::read_csv("~/R Studio/data visulization/cats on the move/data/cats.uk.csv")
+
+#image 
+url <- "https://i.pinimg.com/474x/7d/e2/18/7de21856556fc91fb212e6b71ad78d8c.jpg"
+img <- png::readPNG(RCurl::getURLContent(url))
+i1 <- grid::rasterGrob(img, interpolate = T)
+
+#text
+title <- str_wrap(
+  glue("hrs indoor and prey")
+  )
+
+subtitle <- str_wrap(
+  glue("<b style='color:#11eeee'>prey per month</b> and <b style='color:#11ee11'>indoor</b> cats move more during the night compared<br />")
+  )
+
+caption <- str_wrap(
+  glue("Data source: Movebank for Animal Tracking")
+  )
+```
+
+```{r plotting}
+n_distinct(cats_uk_reference$animal_id) ##check if # of cats are unique 
+summary(cats_uk_reference) ##no missing value on two focal variables 
+
+cats_uk_reference %>% 
+  ggplot(aes(prey_p_month, hrs_indoors)) +
+  geom_point(aes(fill = animal_sex),
+             alpha = 0.6) +
+  geom_line(stat = 'smooth', method = "lm", alpha=0.3) +
+  annotation_custom(i1, ymin = 23, ymax = 26, xmin = 3, xmax = 5) +
+  scale_y_continuous(
+    limits = c(0, 30),
+    breaks = seq(0, 30, by = 5)
+  ) +
+  scale_fill_manual(values = c("#11eeee", "#11ee11")) +
+  labs(y = "hrs_indoors",
+       x = "prey per month",
+       subtitle = subtitle,
+       caption = caption) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    plot.subtitle = element_text(family = "indieflower",
+                                         colour = "white",
+                                         face = "bold",
+                                         size = 50,
+                                         hjust = 0,
+                                         margin = margin(5,0,15,0),
+                                         lineheight = 0.1))
+```
+
+```{r save}
+ggview
+
+```
+
