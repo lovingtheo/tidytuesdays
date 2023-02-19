@@ -68,8 +68,4 @@ cats_uk_reference %>%
                                          lineheight = 0.1))
 ```
 
-```{r save}
-ggview
-
-```
 
