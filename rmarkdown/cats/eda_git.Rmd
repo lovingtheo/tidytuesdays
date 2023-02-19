@@ -18,7 +18,6 @@ if (any (installed_libs == F)) {
 ##load all libraries 
 invisible(lapply (libs, library, character.only = T))
 ```
-
 ```{r import data}
 cats_uk <- readr::read_csv(
   "https://www.datarepository.movebank.org/bitstream/handle/10255/move.883/Pet%20Cats%20United%20Kingdom.csv?sequence=3") %>%
