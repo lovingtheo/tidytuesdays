@@ -1,7 +1,7 @@
 # TidyTueseday
 This is a storage for my TidyTueseday visualization. TidyTuesday is a weekly data project to learn R: You can read more in here https://github.com/rfordatascience/tidytuesday. 
 
-Follow me through as I develop on my data visualization skill. For cases where I adopt most codes from other individuals, I openly acknoledge them.
+Follow me through as I develop on my data visualization skill. For cases where I adopt most codes from other individuals as part of learning process and inspiration, I openly acknoledge them.
 
  * [Week 5/2023: Cats on the Move](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/cat/week_5.png)
 
