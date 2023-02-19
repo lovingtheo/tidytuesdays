@@ -45,7 +45,7 @@ title <- str_wrap(
   glue::glue("Big Tech Stock Prices"))
 
 subtitle <- str_wrap(
-  glue::glue("The graph shows daily stock price of 14 tech companies from 2020 to 2023"))
+  glue::glue("The graph shows daily stock price of 14 tech companies from 2010 to 2023"))
 
 caption <- str_wrap(
   glue::glue("#TidyTuesday week 6 | Data source: Yahoo Finance via Kaggle"))
