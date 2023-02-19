@@ -66,11 +66,11 @@ df$stock_symbol = NULL
 df$high         = NULL
 df$low          = NULL
 df$volume       = NULL
+df$company[df$company=="International Business Machines"] <- c("IBM")
 
 high = df
 high$company2 = high$company
 high$company = NULL
-
 ```
 
 ```{r plotting}
@@ -103,7 +103,6 @@ p1 <- df %>%
        subtitle = subtitle,
        caption = caption)
 ```
-
 
 ```{r save}
 library(pdftools)
