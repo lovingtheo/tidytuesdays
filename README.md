@@ -9,4 +9,4 @@ Follow me through as I develop on my data visualization skill. For cases where I
 
  * [Week 6/2023: Stock Changes](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/stock/week_6.png)
 
-![week_6 copy](https://raw.githubusercontent.com/lovingtheo/tidytueseday/main/rmarkdown/stock/week_6.png)
+![week_6]https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/stock/week_6.png
