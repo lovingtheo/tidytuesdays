@@ -3,7 +3,7 @@ This is a storage for my tidytueseday visualization. TidyTuesday is a weekly dat
 
 Follow me through as I develop on my data visualization skill.
 
- * [Week 5/2023: Cats on the Move](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/cats/week_5.png)
+ * [Week 5/2023: Cats on the Move](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/cat/week_5.png)
 
 ![week_5 copy](https://raw.githubusercontent.com/lovingtheo/tidytueseday/main/rmarkdown/cat/week_5.png)
 
