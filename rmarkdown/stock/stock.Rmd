@@ -1,0 +1,127 @@
+---
+title: "big tech stock prices"
+author: "Jin Kang"
+date: "2023-02-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+##all libraries
+libs <- c("tidyverse", "tidytuesdayR", "here","stringr")
+
+##install what does not exist
+installed_libs <- libs %in% rownames (installed.packages ())
+
+if (any (installed_libs == F)) {
+  install.packages (libs[!installed_libs])}
+
+##load all libraries 
+invisible(lapply (libs, library, character.only = T))
+```
+
+```{r data import}
+tuesdata <- tidytuesdayR::tt_load('2023-02-07')
+tuesdata <- tidytuesdayR::tt_load(2023, week = 6)
+
+big_tech_stock_prices <- tuesdata$big_tech_stock_prices
+big_tech_companies <- tuesdata$big_tech_companies
+
+#check how year distribution looks like for each company
+big_tech_stock_prices %>%
+  group_by(stock_symbol) %>%
+  summarize(date = substr(date, 1, 4)) %>% 
+  distinct(date) %>%
+  table()
+
+#font
+library("showtext")
+font_add_google("Rokkitt")
+f1 = "Rokkitt"
+
+showtext_auto()
+
+#text
+title <- str_wrap(
+  glue::glue("Big Tech Stock Prices"))
+
+subtitle <- str_wrap(
+  glue::glue("The graph shows daily stock price of 14 tech companies from 2020 to 2023"))
+
+caption <- str_wrap(
+  glue::glue("#TidyTuesday week 6 | Data source: Yahoo Finance via Kaggle"))
+```
+
+```{r data wrangling}
+##codes adapted from: https://github.com/npechl/TidyTuesday/blob/master/R/2023-02-07/2023-02-07_Big_Tech_Stock_Prices.R
+
+df <- merge(big_tech_stock_prices, big_tech_companies,
+            by = "stock_symbol", all.x. = TRUE)
+
+df$company = str_split(df$company, "\\, ", simplify = TRUE)[ , 1]
+df$company = str_remove_all(df$company, "\\Inc.|Corporation|Platforms")
+df$company = str_squish(df$company) ##get rid of white space
+
+#get rid of unnecesary columns
+df$stock_symbol = NULL
+df$high         = NULL
+df$low          = NULL
+df$volume       = NULL
+
+high = df
+high$company2 = high$company
+high$company = NULL
+
+```
+
+```{r plotting}
+p1 <- df %>% 
+  ggplot(aes(x = date, y = adj_close)) +
+  geom_line(linewidth = .25, color = "grey") +
+  geom_line(data = high, 
+             aes(x = date, y = adj_close), 
+             linewidth = .3, color = "#e70606") +
+  facet_wrap(vars(company2), scales = "free") +
+  theme_minimal(base_family = f1) + 
+  theme(
+    strip.text = element_text(face = "bold", hjust = 0),
+    axis.title.x = element_blank(),
+    axis.title.y = ggtext::element_markdown( 
+                                    face = "bold",
+                                    size = 10, 
+                                    color = "grey20",
+                                    margin = margin(r = 15, l = 15)),
+    axis.text = element_text(size = 7, color = "grey20"),
+    panel.grid.major = element_line(linewidth = .2, linetype = "dashed", color = "grey"),
+    panel.grid.minor = element_line(linewidth = .2, linetype = "dashed", color = "grey"),
+    plot.title.position   = "plot",
+    plot.caption.position = "plot",
+    plot.title    = element_text(size = 32, color = "grey10", face = "bold"),
+    plot.margin = margin(20, 20, 20, 20)
+  ) +
+  labs(y = "The closing price after adjustments.",
+       title = title,
+       subtitle = subtitle,
+       caption = caption)
+```
+
+
+```{r save}
+library(pdftools)
+#save as PDF
+ggsave(here::here("stock", "image", "week_6.pdf"),
+       p1, 
+       width = 7.85,
+       height = 5.92,
+       device = cairo_pdf)
+
+# convert PDF to PNG
+path <- here::here("stock", "image")
+pdfs <- list.files(path, pattern = "*.pdf", recursive = TRUE)
+for(pdf in pdfs) {
+  pdf_convert(pdf = glue::glue("{path}/{pdf}"), 
+              filenames = glue::glue("{path}/{str_remove(pdf, '.pdf')}.png"),
+              format = "png", dpi = 500)
+}
+
+```
+
