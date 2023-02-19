@@ -1,0 +1,105 @@
+---
+title: 'cats on move: analysis'
+author: "Jin Kang"
+date: "2023-02-04"
+output: html_document
+---
+
+```{r preparation}
+#libraries
+library("tidyverse")
+library("showtext")
+library("sysfonts")
+library("ggtext")
+
+#add and load fonts
+font_add_google("Indie Flower", "indieflower")
+f1 = "Indie Flower"
+
+showtext_auto()
+
+#load data
+readr::read_csv("~/R Studio/data visulization/cats on the move/data/cats.uk.csv")
+
+#image 
+cat <- magick::image_read("http://phylopic.org/assets/images/submissions/f79384d6-2cee-47fb-bdae-25d491f82f9e.512.png")
+
+#text
+title <- str_wrap(
+  glue::glue("Relationship between Prey Caught and Hours Spend Indoors")
+  )
+
+subtitle <- str_wrap(
+  glue::glue("Number of prey caught per month and the average number of hours spent indoor per day <br> has 
+             <span style = 'color:#ff8c42;'>**negative relationship.**</span>")
+  )
+
+caption <- str_wrap(
+  glue::glue("#TidyTuesday week 5 | Data source: Movebank for Animal Tracking")
+  )
+
+n_distinct(cats_uk_reference$animal_id) ##check if # of cats are unique 
+summary(cats_uk_reference) ##no missing value on two focal variables 
+```
+
+```{r plotting}
+p1 <- cats_uk_reference %>% 
+  ggplot(aes(prey_p_month, hrs_indoors)) +
+  geom_point(aes(fill = animal_sex),
+             alpha = 0.6) +
+  geom_jitter(width = 0.35) +
+  geom_line(stat = 'smooth', method = "lm", colour = "#ff8c42") +
+  annotation_custom(grid::rasterGrob(cat, width = 1.3, height = 3), 
+                    ymin = 23, ymax = 26, xmin = 13, xmax = 16) +
+  scale_y_continuous(
+    limits = c(0, 30),
+    breaks = seq(0, 30, by = 5)) +
+  labs(y = "Avg. hours spent indoors",
+       x = "Prey caught per month",
+       title = title,
+       subtitle = subtitle,
+       caption = caption) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(family = f1,
+                              face = "bold",
+                              margin = margin(t = 5)
+                              ),
+    plot.subtitle = element_markdown(family = f1,
+                                     colour = "black",
+                                     margin = margin(t = 5, b = 10),
+                                     size = 9,
+                                     lineheight = 0.1),
+    plot.caption = element_text(vjust = -1.8,
+                                hjust = 0,
+                                margin = margin(t = 1, b = 3, unit ="pt")),
+    axis.title.y = element_text(family = f1,
+                              size = 12,
+                              face = "bold",
+                              vjust = +3),
+    axis.title.x = element_text(family = f1,
+                              size = 12,
+                              face = "bold",
+                              vjust = -0.4),
+    aspect.ratio = 0.6)
+```
+
+```{r save}
+#save as PDF
+ggsave(here::here("cats on the move", "image", "week_5.pdf"),
+       p1, 
+       width = 8.39,
+       height = 5.34,
+       device = cairo_pdf)
+
+# convert PDF to PNG
+path <- here::here("cats on the move", "image")
+pdfs <- list.files(path, pattern = "*.pdf", recursive = TRUE)
+for(pdf in pdfs) {
+  pdf_convert(pdf = glue::glue("{path}/{pdf}"), 
+              filenames = glue::glue("{path}/{str_remove(pdf, '.pdf')}.png"),
+              format = "png", dpi = 500)
+}
+```
+
