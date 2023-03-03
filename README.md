@@ -3,6 +3,10 @@ This is a storage for my TidyTueseday visualization. TidyTuesday is a weekly dat
 
 Follow me through as I develop on my data visualization skill. For cases where I adopt most codes from other individuals as part of learning process and inspiration, I openly acknoledge them.
 
+ * [Week 2/2023: Bird FeederWatch](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/bird%20watch/week_2.png)
+
+![week_2](https://raw.githubusercontent.com/lovingtheo/tidytueseday/main/rmarkdown/bird%20watch/week_2.png)
+ 
  * [Week 5/2023: Cats on the Move](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/cat/week_5.png)
 
 ![week_5 copy](https://raw.githubusercontent.com/lovingtheo/tidytueseday/main/rmarkdown/cat/week_5.png)
