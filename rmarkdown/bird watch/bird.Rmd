@@ -1,0 +1,180 @@
+---
+title: "bird watch"
+author: "Jin Kang"
+date: "2023-02-26"
+output: html_document
+---
+
+```{r setup}
+pacman::p_load(pacman,      
+               tidyverse,   
+               magrittr,    
+               rio,         
+               showtext,    
+               ggimage,     
+               janitor,     
+               ggtext 
+)
+
+feederwatch <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-01-10/PFW_2021_public.csv')
+site_data <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-01-10/PFW_count_site_data_public_2021.csv')
+
+#add and load fonts
+font_add_google("Indie Flower", "indieflower")
+f1 = "Indie Flower"
+
+showtext_auto()
+
+#text
+title <- str_wrap(
+  glue::glue("Most Common Birds Sighted in Canada Provinces")
+  )
+
+subtitle <- str_wrap(
+  glue::glue("Sightings Reported from Project FeederWatch Members (Nov 2020 - Apr 2021)")
+  )
+
+caption <- str_wrap(
+  glue::glue("#TidyTuesday week 2 | Data source: Project FeederWatch")
+  )
+```
+
+```{r data wranggling}
+#check unique provinces in Canada
+feederwatch %>% select(subnational1_code, valid) %>% 
+  filter(
+    str_detect(subnational1_code, ("CA-")),
+    valid == 1
+    ) %>%
+  group_by(subnational1_code)
+  distinct() #12 provinces
+
+#for each province, calculate # of observed birds
+master <- feederwatch %>% 
+  clean_names() %>%
+  filter(
+    str_detect(subnational1_code, ("CA-")),
+    valid == 1
+  ) %>%
+  select(subnational1_code, species_code, how_many)
+
+#join scientific name with species code, downloaded from FeederWatch dictionary codebook
+name <- readxl::read_excel(
+  "~/Desktop/R Studio/data visulization/bird watch/FeederWatch_Data_Dictionary.xlsx", 
+    sheet = "Species Codes", col_types = c("text", 
+        "skip", "text", "skip", "skip", "skip", 
+        "skip", "skip", "skip", "skip", "skip", 
+        "skip", "skip", "skip", "skip"), 
+    skip = 1) %>%
+  clean_names()
+
+#join
+df <- master %>% left_join(., name, by = "species_code")
+
+#calculate a total
+final <- df %>% 
+    rename(bird_name = primary_com_name) %>%
+    group_by(subnational1_code, bird_name) %>%
+    summarize(
+      total_spotted = sum(how_many)
+    ) %>%
+    arrange(desc(total_spotted), .by_group = TRUE) %>%
+    mutate(bird_name = as_factor(bird_name)) %>%
+    ungroup(bird_name) %>%
+    mutate(
+      highest_total = max(total_spotted)
+    ) %>%
+  filter(row_number()==1) 
+
+subnational1_code <- final$subnational1_code
+image <- c("https://s.hdnux.com/photos/01/24/35/41/22141004/5/rawImage.jpg",
+           "https://www.fizzflap.com/wp-content/uploads/2021/03/pine-siskin.jpg",
+           "none",
+           "none",
+           "none",
+           "none",
+           "none",
+           "https://www.allaboutbirds.org/guide/assets/photo/311370301-480px.jpg",
+           "none",
+           "https://www.allaboutbirds.org/guide/assets/photo/311370301-480px.jpg",
+           "https://s.hdnux.com/photos/01/24/35/41/22141004/5/rawImage.jpg",
+           "none"
+           )
+
+im <- data.frame(subnational1_code, image)
+
+all <- final %>% left_join(., im, by = "subnational1_code")
+
+```
+
+```{r plot}
+library("colorspace")
+q12 <- qualitative_hcl(12, palette = "Dark 3")
+
+p1 <- ggplot(data = final,
+            aes(fct_reorder(subnational1_code, highest_total),
+                highest_total)) +
+  geom_col(aes(fill = fct_reorder(subnational1_code, highest_total)),
+           alpha = .8) +
+  coord_flip(clip = "off") +
+  scale_fill_discrete_sequential(palette = "Reds", nmax = 12) + 
+  scale_x_discrete(labels = c("Northwest Territories",
+                           "Newfoundland",
+                           "Yukon",
+                           "PEI",
+                           "Nova Scotia",
+                           "New Brunswick",
+                            "Manitoba",
+                            "Alberta",
+                          "Saskatchewan", 
+                          "Quebec", 
+                           "BC", 
+                           "Ontario")
+                     ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.01),#expand top
+                                        add = c(0.02, 0))) + #expand bottom 
+    theme_classic() + 
+    theme(legend.position = "none",
+      plot.title.position   = "plot",
+      plot.caption.position = "plot",
+      axis.line.x.bottom = element_line()
+    ) +
+   labs(y = "The closing price after adjustments.",
+       title = title,
+       subtitle = subtitle,
+       caption = caption)
+
+p2 <- p1 + 
+  geom_image(data = all %>% filter(bird_name =="Mourning Dove"),
+             aes(x = 6, y = 1000, image = image, ), size = 0.6) +
+  geom_image(data = all %>% filter(bird_name =="Pine Siskin"),
+             aes(x = 6, y = 1500, image = image, ), size = 0.2) +
+  geom_image(data = all %>% filter(subnational1_code =="CA-QC"),
+             aes(x = 8, y = 2000, image = image, ), size = 0.2) +
+  geom_image(data = all %>% filter(subnational1_code =="CA-SK"),
+             aes(x = 9, y = 2500, image = image, ), size = 0.2) 
+
+
+```
+
+```{r save image}
+
+column name 'Image'
+Image <- ""
+CA-ON, https://www.allaboutbirds.org/guide/assets/photo/60386921-480px.jpg
+BC, BC, https://www.fizzflap.com/wp-content/uploads/2021/03/pine-siskin.jpg
+
+
+QC https://www.allaboutbirds.org/guide/assets/photo/311370301-480px.jpg
+
+SK  https://s.hdnux.com/photos/01/24/35/41/22141004/5/rawImage.jpg
+
+
+AB https://s.hdnux.com/photos/01/24/35/41/22141004/5/rawImage.jpg
+
+
+
+mutate(label = c("")
+
+```
+
