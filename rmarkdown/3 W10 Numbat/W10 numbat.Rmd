@@ -1,0 +1,195 @@
+---
+title: "numbat"
+author: "Jin Kang"
+date: "2023-03-14"
+output: html_document
+---
+
+```{r setup}
+##all libraries
+libs <- c("tidyverse", "sf","rnaturalearth","ggrepel","cowplot","magick", "ggtext","showtext",
+          "cowplot", "pdftools")
+
+##install what does not exist
+installed_libs <- libs %in% rownames (installed.packages ())
+
+if (any (installed_libs == F)) {
+  install.packages (libs[!installed_libs])}
+
+##load all libraries 
+invisible(lapply (libs, library, character.only = T))
+```
+
+
+```{r prep}
+#font
+font_add_google('Numans')
+showtext_auto()
+
+f1 <- 'Numans'
+
+#frequently used color
+bg <- "#EDF1D6"
+
+#download data
+numbats <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-03-07/numbats.csv')
+
+#text
+title <- str_wrap(
+  glue::glue("Numbats in Australia"))
+
+caption <- str_wrap(
+  glue::glue("#TidyTuesday week 10 | Data source: Atlas of Living Australia"))
+
+numbat_text = "Numbats are endangered marsupials native to Australia. Merely less than 1000 of them survive  due to habitat loss and introduced predators. Two species of Numbats existed in Australia: <span style = 'color:#698269;'>Myrmecobius fasciatus</span> and <span style = 'color:#a77646;'>Myrmecobius fasciatus rufus</span>, of which rufus is now extinct."
+```
+
+```{data wrangling}
+#acknowledging codes from https://github.com/amalasi2418/TidyTuesday/blob/main/2023/w10/numbats.R
+
+#get the map (i.e., polygons) of Australia
+oceania <- ne_countries(scale = "large",type="countries",continent = "oceania",returnclass = "sf") %>%
+  filter(sovereignt == "Australia")
+
+#get the geographical coordinators
+numbats_sf <- st_as_sf(numbats %>% filter(!is.na(decimalLongitude),!is.na(decimalLatitude)), 
+                       coords=c("decimalLongitude","decimalLatitude")) %>% st_set_crs(st_crs(oceania))
+
+#crs are like coordinate reference system, situating the sf coordinates into the physical location of Australia
+
+#good resource: http://www.geo.hunter.cuny.edu/~ssun/R-Spatial/intro.html
+
+#last seen of rufus & fasciatus
+last_seen <- numbats %>%
+  group_by(scientificName, year) %>%
+  summarize(count = n()) %>%
+  arrange(year, .by_group = TRUE) #
+
+#double check
+numbats %>% 
+  filter(scientificName == "Myrmecobius fasciatus") %>%
+  count(year)
+```
+
+```{r plot}
+#get the map of Australia
+insert <- oceania %>% ggplot() + geom_sf(fill = "#EDF1D6", size=1, color="black") +
+  geom_sf(data=numbats_sf , aes(color=scientificName)) +
+  scale_color_manual(values = c("#698269","#a77646"))+
+  coord_sf(xlim = c(110,155), ylim = c(-45,-10))+
+  theme_void() +
+  theme(plot.background = element_rect(fill=NA, color=NA),
+        panel.background = element_rect(fill=NA, color=NA),
+        legend.position = "none")
+
+
+p1 <- numbats %>%
+  group_by(scientificName, year) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(year, count)) +
+  geom_point(size=2, shape=21, stroke=2) + 
+  geom_line(size=.8) +
+  geom_segment(x = 1856, 
+               xend = 1856, 
+               y = 0,
+               yend = 140,
+               size = 1,
+               linetype = "dashed") +
+  coord_cartesian(clip = "off") +
+  scale_y_continuous(position = "right", 
+                     limits = c(0, 240),
+                     breaks = seq(0, 150, by = 50),
+                     labels = seq(0, 150, by = 50)) +
+  scale_x_continuous(labels = seq(1850, 2025, by = 25),
+                     breaks = seq(1850, 2025, by = 25))
+
+p2 <- p1 + geom_textbox(x = 1880, 
+                  y = 100,
+                  label = "Sighting year was not recorded after 1856 for \n<span style = 'color:#a77646;'>Myrmecobius fasciatus rufus</span>.",
+                  fill = "#EDF1D6",
+                  box.color = "#EDF1D6",
+                  size = 3.5,
+                  lineheight = .25,
+                  color = "black",
+                  family = "f1") +
+  geom_textbox(x = 1896.5, 
+               y = 220,
+               label = numbat_text,
+               width = unit(5, "inch"),
+               fill = "#EDF1D6",
+               box.color = "#EDF1D6",
+               size = 3.5, 
+               lineheight =.25,
+               color = "black", 
+               family = "f1") +
+  geom_curve(aes(x = 1880, 
+                 y = 112, 
+                 xend = 1860, 
+                 yend = 130),
+             arrow = arrow(length = unit(0.02, "npc")), 
+             size = 1, 
+             curvature = 0.3, 
+             angle = 90) +
+  geom_text(x = 2035,
+            y = 168,
+            label = "# of\nsightings",
+            size = 3.5, 
+            lineheight = .80,
+            color = "black", 
+            family = "f1") +
+  xlab("") + ylab("") +
+  theme(plot.background = element_rect(fill = "#EDF1D6", 
+                                       color = "#EDF1D6"),
+        panel.background = element_rect(fill = "#EDF1D6", 
+                                        color = "#EDF1D6"),
+        panel.grid = element_blank(),
+        legend.background = element_rect(fill = "#EDF1D6", 
+                                         color = "#EDF1D6"),
+        legend.key = element_rect(fill = "#EDF1D6", 
+                                  color = "#EDF1D6"),
+        plot.title = element_text(size = 25, 
+                                  face = "bold",
+                                  margin = margin(t = 20, b = 10)),
+        plot.caption = element_text(hjust = .5, 
+                                    margin = margin(t = 15, b = 10)),
+        plot.margin = margin(r = 20,l = 20),
+        plot.title.position   = "plot",
+        text = element_text(family = "f1")) +
+  labs(title = title,
+       caption = caption)
+```
+
+```{r image}
+p3 <- ggdraw(p2) + 
+  draw_plot(insert, 
+            x = .50, 
+            y = .50, 
+            width = 0.5, 
+            height = 0.5)
+
+##adding an image
+##logo_file <- magick::image_read(here::here("numbat", "image.png"))
+
+##p4 <- ggdraw() + 
+  ##draw_plot(p3) +
+  ##draw_image(logo_file, x = .25, width = 0.17)
+```
+
+```{r}
+#save as PDF
+ggsave(here::here("numbat", "week_10.pdf"),
+       p3, 
+       width = 10.08,
+       height = 7.06,
+       device = cairo_pdf)
+
+# convert PDF to PNG
+path <- here::here("numbat")
+pdfs <- list.files(path, pattern = "*.pdf", recursive = TRUE)
+for(pdf in pdfs) {
+  pdf_convert(pdf = glue::glue("{path}/{pdf}"), 
+              filenames = glue::glue("{path}/{str_remove(pdf, '.pdf')}.png"),
+              format = "png", dpi = 500)
+}
+```
+
