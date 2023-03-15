@@ -17,3 +17,7 @@ Follow me through as I develop on my data visualization skill. For cases where I
 
 * [Week 8 - 2/2023: Bob Ross Color](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/stock/week_6.png)
 ![week_8](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/%202%20W8%20Bob%20Ross/week_8.png?raw=true)
+
+ * [Week 10 - 3/2023: Numbat in Australia](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W10%20Numbat/week%2010.png)
+
+![week_2](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W10%20Numbat/week%2010.png?raw=true)
