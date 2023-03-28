@@ -20,4 +20,9 @@ Follow me through as I develop on my data visualization skill. For cases where I
 
  * [Week 10 - 3/2023: Numbats in Australia](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W10%20Numbat/week%2010.png)
 
-![week_2](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W10%20Numbat/week%2010.png?raw=true)
+![week_10](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W10%20Numbat/week%2010.png?raw=true)
+
+* [Week 12 - 3/2023: Programming Language]
+(https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W12%20Language/p1.png)
+
+![week_12](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W12%20Language/p1.png?raw=true)
