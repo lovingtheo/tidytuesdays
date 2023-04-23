@@ -7,27 +7,25 @@ Follow me through as I develop on my data visualization skill. For cases where I
 
 ![week_2](https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/1%20W2%20Bird%20Watch/week_2.png?raw=true)
  
- * [Week 5 - 1/2023: Cats on the Move](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/cat/week_5.png)
+ * [Week 5 - 1/2023: Cats on the Move](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/1%20W5%20UK%20Cats)
 
-![week_5 copy](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/1%20W5%20UK%20Cats/week_5.png?raw=true)
+![week_5](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/1%20W5%20UK%20Cats/week_5.png?raw=true)
 
- * [Week 6 - 2/2023: Stock Changes](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/stock/week_6.png)
+ * [Week 6 - 2/2023: Stock Changes](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/2%20W6%20Big%20Tech%20Stock)
 
 ![week_6](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/2%20W6%20Big%20Tech%20Stock/week_6.png?raw=true)
 
-* [Week 8 - 2/2023: Bob Ross Color](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/stock/week_6.png)
+* [Week 8 - 2/2023: Bob Ross Color](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/%202%20W8%20Bob%20Ross)
 ![week_8](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/%202%20W8%20Bob%20Ross/week_8.png?raw=true)
 
- * [Week 10 - 3/2023: Numbats in Australia](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W10%20Numbat/week%2010.png)
+ * [Week 10 - 3/2023: Numbats in Australia](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/3%20W10%20Numbat)
 
 ![week_10](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W10%20Numbat/week%2010.png?raw=true)
 
-* [Week 12 - 3/2023: Programming Language]
-(https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W12%20Language/p1.png)
+* [Week 12 - 3/2023: Programming Language](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/3%20W12%20Language)
 
 ![week_12](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W12%20Language/p1.png?raw=true)
 
-* [Week 15 - 4/2023: Egg Production]
-(https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/4%20W15%20Egg%20Production/week_15.png)
+* [Week 15 - 4/2023: Egg Production](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/4%20W15%20Egg%20Production)
 
-!(week_13)(https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/4%20W15%20Egg%20Production/week_15.png?raw=true)
+![week_1](https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/4%20W15%20Egg%20Production/week_15.png?raw=true)
