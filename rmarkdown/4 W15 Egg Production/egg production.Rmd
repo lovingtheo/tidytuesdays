@@ -1,0 +1,109 @@
+---
+title: "egg production"
+author: "Jin Kang"
+date: "2023-04-22"
+output: html_document
+---
+
+```{r setup}
+#load libraries
+pacman::p_load(pacman,      
+               tidyverse,
+               showtext,
+               lubridate,
+               showtext
+)
+
+showtext_opts(dpi = 300)
+showtext_auto(enable = TRUE)
+
+#font
+font_add_google('Cabin')
+f1 = "Cabin"
+
+#text
+#create text
+title <- str_wrap(
+  glue::glue("US Cage-free Percentages")
+  )
+
+subtitle <-  
+  glue::glue("By month in which report observations are collected, between Aug 2016 to Feb 2021.")
+  
+caption <- str_wrap(
+  glue::glue("#TidyTuesday week 15 | Data source: The Humane League's US Egg Production")
+  )
+
+```
+
+```{r data}
+#load data
+eggproduction  <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-04-11/egg-production.csv')
+cagefreepercentages <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-04-11/cage-free-percentages.csv')
+```
+
+
+```{r pressure, echo=FALSE}
+#acknolwedging codes from https://github.com/leeolney3/TidyTuesday/blob/main/2023/week_15/2023_15.qmd
+
+master <- cagefreepercentages %>% 
+  pivot_longer(percent_hens:percent_eggs) %>%
+  drop_na() %>%
+  mutate(id = row_number()) %>%
+  filter(id >= 11) %>%
+  mutate(year = year(observed_month),
+         month = month(observed_month),
+         source1 = case_when(
+           str_detect(source, ".pdf") ~ "Observed",
+           TRUE ~ "Computed"), 
+         name1 = case_when(name=="percent_hens"~"% of cage-free hens relative to all table-egg-laying hens", 
+                   name=="percent_eggs"~"% of cage-free eggs relative to all table eggs")) %>%
+  mutate(grp=str_trim(glue::glue("{source1} {name1}")))
+
+p <- master %>% ggplot(aes(x = observed_month, 
+                      y = value, 
+                      fill = grp,
+                      colour = after_scale(colorspace::darken(fill,.2)))) +
+  geom_line() +
+  geom_point(size = 2.3, shape = 21) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  scale_color_manual(values=c("#A31414","#52B0AE","#2B6999")) +
+  scale_fill_manual(values=c("#A31414","#52B0AE","#2B6999")) +
+  cowplot::theme_minimal_grid(13) +
+  theme(text = element_text(family = f1),
+        axis.title = element_text(size=12),
+        axis.ticks.y = element_blank(),
+        legend.position = "top",
+        legend.direction = "vertical",
+        plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust=0, color="grey40",margin=margin(t=8)),
+        legend.title = element_blank(),
+        legend.margin = margin(l=-47, t = -3, b = 4),
+        plot.margin = margin(.5,.75,.5,.5, unit="cm"),
+        plot.background = element_rect(fill="#F9F9F9", color=NA)) +
+  labs(subtitle = subtitle,
+       title = title,
+       x = "Date (month of report observation)", y="Percent",
+       caption = caption)
+```
+
+
+```{r save}
+#save as PDF
+ggsave(here::here("egg", "week_15.pdf"),
+       p, 
+       width = 8,
+       height = 6,
+       device = cairo_pdf)
+
+# convert PDF to PNG
+path <- here::here("egg")
+pdfs <- list.files(path, pattern = "*.pdf", recursive = TRUE)
+for(pdf in pdfs) {
+  pdftools::pdf_convert(pdf = glue::glue("{path}/{pdf}"), 
+              filenames = glue::glue("{path}/{str_remove(pdf, '.pdf')}.png"),
+              format = "png", dpi = 500)
+}
+```
+
