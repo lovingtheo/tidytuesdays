@@ -26,3 +26,8 @@ Follow me through as I develop on my data visualization skill. For cases where I
 (https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W12%20Language/p1.png)
 
 ![week_12](https://github.com/lovingtheo/tidytueseday/blob/main/rmarkdown/3%20W12%20Language/p1.png?raw=true)
+
+* [Week 15 - 4/2023: Egg Production]
+(https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/4%20W15%20Egg%20Production/week_15.png)
+
+!(week_13)(https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/4%20W15%20Egg%20Production/week_15.png?raw=true)
