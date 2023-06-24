@@ -29,3 +29,6 @@ Follow me through as I develop on my data visualization skill. For cases where I
 * [Week 15 - 4/2023: Egg Production](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/4%20W15%20Egg%20Production)
 
 ![week_1](https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/4%20W15%20Egg%20Production/week_15.png?raw=true)
+
+* [Week 25 - 6/2023: UFO Sightings](https://github.com/lovingtheo/tidytuesdays/tree/main/rmarkdown/5%20W25%20UFO%20Sightings)
+![week_25](https://github.com/lovingtheo/tidytuesdays/blob/main/rmarkdown/5%20W25%20UFO%20Sightings/week_25.png?raw=true)
