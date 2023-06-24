@@ -1,0 +1,109 @@
+---
+title: "ufo"
+author: "Jin Kang"
+date: "2023-06-23"
+output: html_document
+---
+```{r credit}
+#full credit given to dylanmangel for his code: https://github.com/dylanmangel/tidytuesday/blob/master/ufo
+#thank you for helping me learn another amazing codes and data visualization skills
+```
+
+```{r setup}
+#load libraries
+pacman::p_load(pacman,      
+               tidyverse,
+               lubridate,
+               usmap,
+               ggtext,
+               showtext,
+               canadianmaps,
+               grid
+)
+
+showtext_opts(dpi = 300)
+showtext_auto(enable = TRUE)
+
+#font
+font_files() |> tibble() |> filter(str_detect(family, "Courier"))
+font_add("Courier", regular="Courier.ttc")
+
+#data
+ufo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-06-20/ufo_sightings.csv')
+master <- ufo
+
+places <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-06-20/places.csv')
+
+
+#create text
+caption <- str_wrap(
+  glue::glue("#TidyTuesday week 25 | Data source: UFO Sightings Redux")
+  )
+
+#image
+space <- magick::image_read("https://images.unsplash.com/photo-1464802686167-b939a6910659?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80")
+```
+
+```{r data cleaning}
+#change the nature of central variables
+master$reported_date_time <- mdy_hm(master$reported_date_time)
+master$city <- factor(master$city)
+master$state <- factor(master$state)
+master$country_code <- factor(master$country_code)
+master$shape <- factor(master$shape)
+
+#filter to Canada
+masterca <- filter(master, master$country_code =="CA")
+
+#join to get long and lat
+d1= masterca |>
+  left_join(places, by=c("city","state","country_code"))
+```
+
+```{r plot}
+plot <- ggplot() +
+  #to fit background image to the size of the plot
+  annotation_custom(grid::rasterGrob(space, width = unit(1,"npc"), 
+                               height = unit(1,"npc")), -Inf, Inf, -Inf, Inf)
+  
+plot <- plot +
+  geom_prov(data = PROV, fill = "PT", colour = "midnightblue", size = 0.2) +
+  scale_x_continuous(expand = expansion(mult = c(.3, .3))) + 
+  scale_fill_manual(values = c(rep("black", 13))) +
+  geom_point(data = d1, alpha = 0.1, shape = 20, color = "gold", size = 0.5, 
+             mapping = aes(x = longitude, y = latitude)) +
+  annotate("text", x = -135, y = 40, 
+           label = "REPORTED UFO OBSERVATIONS IN CANADA", 
+           color="white", family="Courier") +
+  theme(
+    legend.position = "none",
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.caption.position = "plot",
+    plot.caption = element_text(hjust = 0, 
+                                margin = margin(t = 13, b = 13), 
+                                family = "Courier")) +
+  labs(caption = caption)
+
+plot
+```
+
+```{r save}
+#save as PDF
+ggsave(here::here("ufo", "week_25.pdf"),
+       plot, 
+       width = 9,
+       height = 6,
+       device = cairo_pdf)
+
+# convert PDF to PNG
+path <- here::here("ufo")
+pdfs <- list.files(path, pattern = "*.pdf", recursive = TRUE)
+for(pdf in pdfs) {
+  pdftools::pdf_convert(pdf = glue::glue("{path}/{pdf}"), 
+              filenames = glue::glue("{path}/{str_remove(pdf, '.pdf')}.png"),
+              format = "png", dpi = 500)
+}
+```
+
